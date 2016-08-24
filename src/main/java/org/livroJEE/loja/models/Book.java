@@ -53,6 +53,6 @@ public class Book {
 				+ ", numberOfPages=" + numberOfPages + ", price=" + price + "]";
 	}
 	
-	
+	public void add(){}
 	
 }
