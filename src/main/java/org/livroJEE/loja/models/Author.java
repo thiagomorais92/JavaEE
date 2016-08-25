@@ -1,6 +1,5 @@
 package org.livroJEE.loja.models;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -35,5 +34,6 @@ public class Author {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	
 }

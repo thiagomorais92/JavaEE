@@ -1,14 +1,11 @@
 package org.livroJEE.loja.daos;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
-import org.livroJEE.loja.models.Author;
 import org.livroJEE.loja.models.Book;
 
 /** Essa annotation é o mesmo que não ter annotation, mas é importante 
@@ -26,11 +23,8 @@ public class BookDAO {
 		manager.persist(product);
 	}
 
-	public ArrayList<Author> list() {
-		Query query = manager.createQuery("from Author");
-		 List<Author> list = new ArrayList<Author>(0);
-		 list = query.getResultList();
-		return (ArrayList<Author>) list;
+	public List<Book> list() {
+		return manager.createQuery("select distinct (b) from Book b join fetch  b.authors order by b.title asc", Book.class).getResultList();
 	}
 
 }

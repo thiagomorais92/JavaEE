@@ -2,13 +2,15 @@ package org.livroJEE.loja.managedbeans;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.livroJEE.loja.daos.AuthorDAO;
 import org.livroJEE.loja.daos.BookDAO;
 import org.livroJEE.loja.models.Author;
 import org.livroJEE.loja.models.Book;
@@ -33,40 +35,53 @@ public class AdminBooksBean {
  ***/
 	@Inject
 	private BookDAO bookDao;
+	@Inject 
+	private AuthorDAO authorDAO;
 	private Book product = new Book();
-	private List<Integer> selectedAuthorsId = new ArrayList<>(0);
+	private List<Integer> selectedAuthorsIds = new ArrayList<>(0);
 	
 	private List<Author> authors = new ArrayList<Author>(0);
 	
 	@PostConstruct
-	public void loadResources(){
-		this.authors = bookDao.list();
+	private void loadResources(){
+		this.authors = authorDAO.list();
 	}
 	
 	
 	@Transactional
-	public void save(){
+	public String save(){
 		populateBookAuthor();
 		bookDao.save(product);
+		FacesContext facesContext = FacesContext.getCurrentInstance(); 
+		facesContext.addMessage(null, new FacesMessage("Livro gravado com sucesso."));
+		clearObjects();
+		return "/produtos/lista?faces-redirect=true";
 	}
 
-	private void populateBookAuthor() {
-		 
-		selectedAuthorsId.stream().map( (id) -> {
-			 return new Author(id);
-		 }).forEach((Consumer<? super Author>) product);
+	private void clearObjects() {
+		this.product = new Book();
+		this.selectedAuthorsIds.clear();
+		
 	}
+
+
+	private void populateBookAuthor() {
+		System.out.println(selectedAuthorsIds+ "=====" );
+ 		selectedAuthorsIds.stream().map( (strId) -> {
+ 			return new Author(strId);
+ 		}).forEach(product :: add);
+ 	}
 
 	public Book getProduct() {
 		return product;
 	}
 
-	public List<Integer> getSelectedAuthorsId() {
-		return selectedAuthorsId;
+	public List<Integer> getSelectedAuthorsIds() {
+		return selectedAuthorsIds;
 	}
 
-	public void setSelectedAuthorsId(List<Integer> selectedAuthorsId) {
-		this.selectedAuthorsId = selectedAuthorsId;
+	public void setSelectedAuthorsIds(List<Integer> selectedAuthorsId) {
+		this.selectedAuthorsIds = selectedAuthorsId;
 	}
 
 
