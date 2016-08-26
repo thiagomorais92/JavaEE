@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import org.livroJEE.loja.daos.BookDAO;
@@ -21,6 +23,7 @@ public class AdminListBooksBean {
 	
 	@PostConstruct
 	private void loadObjects(){
+		
 		this.books = bookDAO.list();
 	}
 
