@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 
 import org.livroJEE.loja.daos.AuthorDAO;
 import org.livroJEE.loja.daos.BookDAO;
+import org.livroJEE.loja.helpers.MessagesHelper;
 import org.livroJEE.loja.models.Author;
 import org.livroJEE.loja.models.Book;
 
@@ -37,6 +38,10 @@ public class AdminBooksBean {
 	private BookDAO bookDao;
 	@Inject 
 	private AuthorDAO authorDAO;
+	@Inject
+	private FacesContext facesContext;
+	@Inject
+	private MessagesHelper messagesHelper;
 	private Book product = new Book();
 	private List<Integer> selectedAuthorsIds = new ArrayList<>(0);
 	
@@ -53,9 +58,7 @@ public class AdminBooksBean {
 		populateBookAuthor();
 		bookDao.save(product);
 		clearObjects();
-		 FacesContext facesContext = FacesContext.getCurrentInstance();
-		 facesContext.getExternalContext().getFlash().setKeepMessages(true);
-		 facesContext.addMessage("messages", new FacesMessage("Livro gravado com sucesso."));
+		messagesHelper.addFlash(new FacesMessage("Livro gravado com sucesso."));
 		return "/produtos/lista?faces-redirect=true";
 	}
 
@@ -67,7 +70,6 @@ public class AdminBooksBean {
 
 
 	private void populateBookAuthor() {
-		System.out.println(selectedAuthorsIds+ "=====" );
  		selectedAuthorsIds.stream().map( (strId) -> {
  			return new Author(strId);
  		}).forEach(product :: add);
